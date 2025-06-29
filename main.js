@@ -15,6 +15,10 @@ let tray;
 let clipboardHistory = [];
 
 const HISTORY_FILE = path.join(__dirname, "history.json");
+const ASSETS_DIR = path.join(__dirname, "assets");
+
+const isDev =
+  process.env.NODE_ENV === "development" || process.env.VITE_DEV_SERVER_URL;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -26,11 +30,22 @@ function createWindow() {
     show: false,
   });
 
-  win.loadFile(path.join(__dirname, "renderer/index.html"));
+  if (isDev) {
+    win.loadURL("http://localhost:5173");
+  } else {
+    win.loadFile(path.join(__dirname, "renderer/dist/index.html"));
+  }
 }
 
 function createTray() {
-  tray = new Tray(path.join(__dirname, "assets/tray.png"));
+  const iconPath = path.join(ASSETS_DIR, "tray.png");
+  if (!fs.existsSync(iconPath)) {
+    console.error(
+      `Tray icon not found at ${iconPath}. Please create an 'assets' directory in the root with a 'tray.png' file.`
+    );
+    return; // Avoid crashing the app
+  }
+  tray = new Tray(iconPath);
   const contextMenu = Menu.buildFromTemplate([
     { label: "Show Clipboard", click: () => win.show() },
     { label: "Quit", role: "quit" },
@@ -61,7 +76,12 @@ function watchClipboard() {
     if (!image.isEmpty() && image.toDataURL() !== lastImage.toDataURL()) {
       lastImage = image;
       const fileName = `image-${Date.now()}.png`;
-      const filePath = path.join(__dirname, "assets", fileName);
+      const filePath = path.join(ASSETS_DIR, fileName);
+
+      if (!fs.existsSync(ASSETS_DIR)) {
+        fs.mkdirSync(ASSETS_DIR, { recursive: true });
+      }
+
       fs.writeFileSync(filePath, image.toPNG());
 
       clipboardHistory.unshift({
