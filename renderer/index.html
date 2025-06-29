@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clipboard Manager</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 10px;
+      }
+      .item {
+        margin: 10px 0;
+        border-bottom: 1px solid #ddd;
+        padding: 5px;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Clipboard History</h2>
+    <div id="list"></div>
+
+    <script>
+      const list = document.getElementById("list");
+
+      function render(history) {
+        list.innerHTML = "";
+        history.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          if (item.type === "text") {
+            div.textContent = item.content;
+          } else if (item.type === "image") {
+            const img = document.createElement("img");
+            img.src = item.content;
+            div.appendChild(img);
+          }
+          list.appendChild(div);
+        });
+      }
+
+      window.electronAPI.getHistory().then(render);
+      window.electronAPI.onClipboardUpdate(render);
+    </script>
+  </body>
+</html>
