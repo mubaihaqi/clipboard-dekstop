@@ -13,6 +13,7 @@ const fs = require("fs");
 let win;
 let tray;
 let clipboardHistory = [];
+let ignoreNextClipboardChange = false;
 
 const HISTORY_FILE = path.join(__dirname, "history.json");
 
@@ -46,6 +47,13 @@ function watchClipboard() {
   setInterval(() => {
     const text = clipboard.readText();
     const image = clipboard.readImage();
+
+    if (ignoreNextClipboardChange) {
+      ignoreNextClipboardChange = false;
+      lastText = text;
+      lastImage = image;
+      return;
+    }
 
     if (text && text !== lastText) {
       lastText = text;
@@ -93,5 +101,54 @@ app.whenReady().then(() => {
 });
 
 ipcMain.handle("get-history", () => clipboardHistory);
+
+ipcMain.handle("copy-item", (event, idx) => {
+  const item = clipboardHistory[idx];
+  if (!item) return;
+  ignoreNextClipboardChange = true;
+  if (item.type === "text") {
+    clipboard.writeText(item.content);
+  } else if (item.type === "image") {
+    const image = nativeImage.createFromPath(item.content);
+    clipboard.writeImage(image);
+  }
+});
+
+ipcMain.handle("delete-item", (event, idx) => {
+  if (clipboardHistory[idx]) {
+    clipboardHistory.splice(idx, 1);
+    saveHistory();
+    win.webContents.send("update-clipboard", clipboardHistory);
+  }
+});
+
+ipcMain.handle("toggle-pin", (event, idx) => {
+  const item = clipboardHistory[idx];
+  if (!item) return;
+  item.pinned = !item.pinned;
+  // Pinned items stay at the top
+  clipboardHistory = [
+    ...clipboardHistory.filter((i) => i.pinned),
+    ...clipboardHistory.filter((i) => !i.pinned),
+  ];
+  saveHistory();
+  win.webContents.send("update-clipboard", clipboardHistory);
+});
+
+ipcMain.handle("move-item", (event, idx, direction) => {
+  if (
+    (direction === "up" && idx === 0) ||
+    (direction === "down" && idx === clipboardHistory.length - 1)
+  ) {
+    return;
+  }
+  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+  [clipboardHistory[idx], clipboardHistory[swapIdx]] = [
+    clipboardHistory[swapIdx],
+    clipboardHistory[idx],
+  ];
+  saveHistory();
+  win.webContents.send("update-clipboard", clipboardHistory);
+});
 
 app.on("window-all-closed", (e) => e.preventDefault());
