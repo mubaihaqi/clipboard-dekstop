@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Quicksand:400,700&display=swap"
+      rel="stylesheet"
+    />
     <title>Clipboard Manager</title>
   </head>
   <body>
@@ -17,13 +21,6 @@
         history.forEach((item, idx) => {
           const div = document.createElement("div");
           div.className = "item";
-          if (item.type === "text") {
-            div.textContent = item.content;
-          } else if (item.type === "image") {
-            const img = document.createElement("img");
-            img.src = item.content;
-            div.appendChild(img);
-          }
 
           // Tombol aksi
           const actions = document.createElement("div");
@@ -31,31 +28,50 @@
 
           // Salin
           const copyBtn = document.createElement("button");
-          copyBtn.textContent = "Salin";
+          copyBtn.textContent = "⧉";
+          copyBtn.title = "Salin";
           copyBtn.onclick = () => window.electronAPI.copyItem(idx);
 
           // Hapus
           const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "Hapus";
+          deleteBtn.textContent = "🗑";
+          deleteBtn.title = "Hapus";
           deleteBtn.onclick = () => window.electronAPI.deleteItem(idx);
 
           // Pin
           const pinBtn = document.createElement("button");
-          pinBtn.textContent = item.pinned ? "Unpin" : "Pin";
+          pinBtn.textContent = item.pinned ? "📌" : "📍";
+          pinBtn.title = item.pinned ? "Unpin" : "Pin";
           pinBtn.onclick = () => window.electronAPI.togglePin(idx);
 
           // Geser ke atas
           const upBtn = document.createElement("button");
           upBtn.textContent = "↑";
+          upBtn.title = "Geser ke atas";
           upBtn.onclick = () => window.electronAPI.moveItem(idx, "up");
 
           // Geser ke bawah
           const downBtn = document.createElement("button");
           downBtn.textContent = "↓";
+          downBtn.title = "Geser ke bawah";
           downBtn.onclick = () => window.electronAPI.moveItem(idx, "down");
 
           actions.append(copyBtn, deleteBtn, pinBtn, upBtn, downBtn);
+
+          // Konten utama
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "item-content";
+          if (item.type === "text") {
+            contentDiv.textContent = item.content;
+          } else if (item.type === "image") {
+            const img = document.createElement("img");
+            img.src = item.content;
+            contentDiv.appendChild(img);
+          }
+
+          // Urutan: actions di atas, lalu content
           div.appendChild(actions);
+          div.appendChild(contentDiv);
 
           list.appendChild(div);
         });
