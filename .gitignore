@@ -1,7 +1,7 @@
 # Root
 node_modules/
 dist/
-.history.json
+history.json
 package-lock.json
 .DS_Store
 Thumbs.db
@@ -14,4 +14,4 @@ yarn-error.log*
 # Renderer (React + Vite)
 renderer/node_modules/
 renderer/dist/
-renderer/.vite/
+renderer/.vite/history.json
