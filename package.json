@@ -4,13 +4,26 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "electron": "^37.1.0"
+    "electron": "^37.1.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.example.clipboard-manager",
+    "productName": "Clipboard Manager",
+    "files": [
+      "main.js",
+      "renderer/**/*"
+    ],
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }

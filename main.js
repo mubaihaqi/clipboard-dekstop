@@ -6,6 +6,7 @@ const {
   Tray,
   Menu,
   ipcMain,
+  screen,
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
@@ -20,27 +21,64 @@ const HISTORY_FILE = path.join(__dirname, "history.json");
 function createWindow() {
   win = new BrowserWindow({
     width: 400,
-    height: 600,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
     show: false,
+    opacity: 0,
     autoHideMenuBar: true,
+    frame: false,
+    transparent: true,
   });
 
   win.loadFile(path.join(__dirname, "renderer/index.html"));
 
-  // Hide to tray on close
-  win.on("close", (event) => {
-    event.preventDefault();
-    win.hide();
+  win.on("blur", () => {
+    let opacity = 1;
+    const interval = setInterval(() => {
+      opacity -= 0.1;
+      if (opacity <= 0) {
+        clearInterval(interval);
+        win.hide();
+        win.setOpacity(0);
+      } else {
+        win.setOpacity(opacity);
+      }
+    }); // Durasi animasi ~1000ms
   });
 }
 
 function createTray() {
   tray = new Tray(path.join(__dirname, "assets/tray.png"));
   const contextMenu = Menu.buildFromTemplate([
-    { label: "Show Clipboard", click: () => win.show() },
+    {
+      label: "Show Clipboard",
+      click: () => {
+        if (win.isVisible() && win.getOpacity() === 1) {
+          return win.focus();
+        }
+
+        const { workAreaSize } = screen.getPrimaryDisplay();
+        const [winWidth] = win.getSize();
+        win.setPosition(workAreaSize.width - winWidth, 0);
+
+        win.showInactive();
+
+        // Animasi fade-in
+        let opacity = 0;
+        const interval = setInterval(() => {
+          opacity += 0.5;
+          if (opacity >= 1) {
+            clearInterval(interval);
+            win.setOpacity(1);
+            win.focus();
+          } else {
+            win.setOpacity(opacity);
+          }
+        }, 200);
+      },
+    },
     { label: "Quit", role: "quit" },
   ]);
   tray.setToolTip("Clipboard Manager");

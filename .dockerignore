@@ -1,0 +1,8 @@
+# Abaikan dependensi dan file build lokal
+node_modules
+dist
+release
+
+# Abaikan file git dan log
+.git
+npm-debug.log*

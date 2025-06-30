@@ -1,11 +1,15 @@
 body {
-  background: linear-gradient(120deg, #e7dac7 0%, #b7c9a8 100%);
+  background: linear-gradient(
+    120deg,
+    #1e293b 0%,
+    #0f172a 100%
+  ); /* slate-800 to slate-900 */
   font-family: "VT323", monospace;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   overflow: hidden;
-  box-shadow: 0 0 0 100vw #e7dac7 inset;
+  border-radius: 18px;
+  color: #cbd5e1; /* slate-300 */
 }
 
 body,
@@ -24,37 +28,39 @@ body::-webkit-scrollbar,
 #title,
 h2 {
   text-align: center;
-  color: #3d4a3d;
-  margin-top: 18px;
+  color: #e2e8f0; /* slate-200 */
+  margin-block: 0px;
+  padding-top: 24px;
+  padding-bottom: 18px;
   letter-spacing: 2px;
   font-size: 2.1rem;
   font-family: "Fira Mono", "Consolas", monospace;
-  text-shadow: 0 2px 12px #fff8, 0 1px 0 #fff;
+  text-shadow: 0 2px 12px #00000055, 0 1px 0 #00000088;
   font-weight: 900;
 }
 
 #list {
   max-width: 520px;
-  margin: 18px auto 0 auto;
-  padding-bottom: 32px;
+  margin: 0 auto 0 auto;
+  padding-bottom: 8px;
   width: 96vw;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px #b7b7a455, 0 1.5px 0 #fff;
+  background: rgba(30, 41, 59, 0.3); /* slate-800 with alpha */
+  box-shadow: 0 8px 32px #02061755, 0 1.5px 0 #33415588; /* slate-950 shadow */
   overflow-y: auto;
 }
 
 .item {
-  background: #f7f4e9;
-  border: 2.5px solid #b7b7a4;
+  background: #334155; /* slate-700 */
+  border: 2.5px solid #475569; /* slate-600 */
   border-radius: 18px;
-  box-shadow: 0 4px 24px #b7b7a433, 0 1.5px 0 #fff;
-  margin-bottom: 16px;
+  box-shadow: 0 4px 24px #02061733, 0 1.5px 0 #47556988;
+  margin-bottom: 8px;
   padding: 0;
-  color: #3d4a3d;
+  color: #cbd5e1; /* slate-300 */
   position: relative;
   min-height: 64px;
-  max-height: 180px;
+  max-height: 177px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -67,8 +73,8 @@ h2 {
 }
 
 .item:hover {
-  box-shadow: 0 12px 32px #b7b7a455, 0 2px 0 #fff;
-  border: 2.5px solid #a3b18a;
+  box-shadow: 0 12px 32px #02061755, 0 2px 0 #64748b88;
+  border: 2.5px solid #64748b; /* slate-500 */
 }
 
 .item-content {
@@ -88,10 +94,10 @@ h2 {
   max-height: 110px;
   border-radius: 14px;
   margin-bottom: 6px;
-  box-shadow: 0 2px 12px #b7b7a455;
+  box-shadow: 0 2px 12px #02061755;
   display: block;
-  border: 2px solid #b7b7a4;
-  background: #e7dac7;
+  border: 2px solid #475569; /* slate-600 */
+  background: #1e293b; /* slate-800 */
   object-fit: cover;
 }
 
@@ -108,69 +114,77 @@ h2 {
   border-radius: 50%;
   width: 38px;
   height: 38px;
-  color: #4b6652;
+  color: #94a3b8; /* slate-400 */
   font-size: 1.2em;
   font-weight: 700;
-  box-shadow: 0 2px 8px #b7b7a455;
+  box-shadow: 0 2px 8px #02061755;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s, color 0.2s;
   outline: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e3f6f5;
-  border: 2px solid #b7b7a4;
+  background: #1e293b; /* slate-800 */
+  border: 2px solid #475569; /* slate-600 */
 }
 
 .actions button:hover {
-  background: #b8e0d2;
+  background: #334155; /* slate-700 */
   transform: scale(1.13);
-  color: #2d3a2e;
-  border-color: #a3b18a;
+  color: #e2e8f0; /* slate-200 */
+  border-color: #64748b; /* slate-500 */
 }
 
 .actions button:active {
   transform: scale(0.98);
 }
 
-/* Button color variants */
+/* Button color variants - Dark Theme */
 .actions button:nth-child(1) {
-  background: #b8e0d2;
+  background: #10b98120;
+  color: #6ee7b7;
+  border-color: #10b981; /* Copy - Green */
 }
 .actions button:nth-child(1):hover {
-  background: #95b8d1;
+  background: #10b98140;
+  color: #a7f3d0;
 }
 .actions button:nth-child(2) {
-  background: #ffe5d9;
-  color: #b85c5c;
+  background: #ef444420;
+  color: #f87171;
+  border-color: #ef4444; /* Delete - Red */
 }
 .actions button:nth-child(2):hover {
-  color: #fff;
-  background: #ffb4a2;
+  background: #ef444440;
+  color: #fca5a5;
 }
 .actions button:nth-child(3) {
-  background: #f9f7cf;
-  color: #b89b3c;
+  background: #f59e0b20;
+  color: #fbbf24;
+  border-color: #f59e0b; /* Pin - Yellow */
 }
 .actions button:nth-child(3):hover {
-  color: #fff;
-  background: #ffe082;
+  background: #f59e0b40;
+  color: #fcd34d;
 }
 .actions button:nth-child(4),
 .actions button:nth-child(5) {
-  background: #e3f6f5;
+  background: #47556920;
+  color: #94a3b8;
+  border-color: #64748b; /* Move - Neutral */
 }
 .actions button:nth-child(4):hover,
 .actions button:nth-child(5):hover {
-  background: #b8e0d2;
+  background: #64748b40;
+  color: #cbd5e1;
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background: #e7dac7;
+  background: #0f172a; /* slate-900 */
 }
 ::-webkit-scrollbar-thumb {
-  background: #b7b7a4;
+  background: #334155; /* slate-700 */
   border-radius: 8px;
 }
 
