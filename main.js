@@ -25,9 +25,16 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
     show: false,
+    autoHideMenuBar: true,
   });
 
   win.loadFile(path.join(__dirname, "renderer/index.html"));
+
+  // Hide to tray on close
+  win.on("close", (event) => {
+    event.preventDefault();
+    win.hide();
+  });
 }
 
 function createTray() {
