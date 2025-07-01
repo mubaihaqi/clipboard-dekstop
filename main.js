@@ -138,11 +138,36 @@ function loadHistory() {
   }
 }
 
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, commandLine, workingDirectory) => {
+    if (win) {
+      if (!win.isVisible()) {
+        const { workAreaSize } = screen.getPrimaryDisplay();
+        const [winWidth] = win.getSize();
+        win.setPosition(workAreaSize.width - winWidth, 0);
+        win.setOpacity(1);
+        win.show();
+      }
+      win.focus();
+    }
+  });
+}
+
 app.whenReady().then(() => {
   loadHistory();
   createWindow();
   createTray();
   watchClipboard();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
 });
 
 ipcMain.handle("get-history", () => clipboardHistory);
